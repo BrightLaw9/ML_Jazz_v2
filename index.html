@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lawrence Zou — exploring machine intelligence through music">
+  <meta name="theme-color" content="#101820">
+  <title>Exploring machine intelligence through music — Lawrence Zou</title>
+  <style>
+    :root {
+      --ink: #172029;
+      --muted: #5f6870;
+      --paper: #f7f3e9;
+      --surface: #fffdf7;
+      --night: #101820;
+      --night-soft: #1c2933;
+      --gold: #d7a84a;
+      --gold-pale: #f1dfb2;
+      --teal: #267a73;
+      --line: rgba(23, 32, 41, .14);
+      --shadow: 0 18px 55px rgba(16, 24, 32, .12);
+      --radius: 18px;
+      --content: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 9% 4%, rgba(215, 168, 74, .13), transparent 29rem),
+        var(--paper);
+      font: 17px/1.72 Georgia, "Times New Roman", serif;
+    }
+
+    a { color: var(--teal); }
+    a:hover { color: #195e59; }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: -5rem;
+      z-index: 100;
+      padding: .7rem 1rem;
+      color: white;
+      background: var(--night);
+      border-radius: 8px;
+    }
+
+    .skip-link:focus { top: 1rem; }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(16, 24, 32, .94);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      width: min(calc(100% - 2rem), var(--content));
+      min-height: 62px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand,
+    .nav-links a,
+    .eyebrow,
+    .section-kicker,
+    .label,
+    .pipeline strong,
+    .footer-inner {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .brand {
+      color: white;
+      font-size: .82rem;
+      font-weight: 750;
+      letter-spacing: .14em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      gap: 1.15rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-links a {
+      color: #dfe5e8;
+      font-size: .82rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: var(--gold-pale); }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      color: white;
+      background: var(--night);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    .hero::before {
+      width: 38rem;
+      height: 38rem;
+      right: -13rem;
+      top: -22rem;
+      border: 1px solid rgba(215, 168, 74, .4);
+      box-shadow: 0 0 0 5rem rgba(215, 168, 74, .025), 0 0 0 10rem rgba(215, 168, 74, .02);
+    }
+
+    .hero::after {
+      width: 22rem;
+      height: 22rem;
+      left: -11rem;
+      bottom: -14rem;
+      background: rgba(38, 122, 115, .22);
+    }
+
+    .hero-inner {
+      width: min(calc(100% - 2rem), var(--content));
+      min-height: 570px;
+      margin: auto;
+      padding: 7rem 0 6rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(260px, .65fr);
+      align-items: end;
+      gap: 5rem;
+    }
+
+    .eyebrow,
+    .section-kicker {
+      margin: 0 0 1rem;
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.15; }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 6.6rem);
+      font-weight: 500;
+      letter-spacing: -.045em;
+    }
+
+    .hero-copy {
+      margin: 2rem 0 0;
+      max-width: 740px;
+      color: #cbd3d7;
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+    }
+
+    .byline {
+      padding: 1.3rem 0 1.3rem 1.4rem;
+      border-left: 2px solid var(--gold);
+    }
+
+    .byline .label {
+      display: block;
+      color: #8f9ba1;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .byline strong { font-size: 1.35rem; font-weight: 500; }
+
+    main { display: block; }
+
+    .section {
+      width: min(calc(100% - 2rem), var(--content));
+      margin: auto;
+      padding: 6.5rem 0;
+      scroll-margin-top: 62px;
+    }
+
+    .section + .section { border-top: 1px solid var(--line); }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-number {
+      color: var(--gold);
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 800px;
+      font-size: clamp(2.2rem, 5vw, 4.3rem);
+      font-weight: 500;
+      letter-spacing: -.03em;
+    }
+
+    .lede {
+      max-width: 780px;
+      margin: 1.2rem 0 0;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    h3 {
+      margin: 4rem 0 1.2rem;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      font-weight: 500;
+    }
+
+    h4 { margin: 0 0 .7rem; font-size: 1.2rem; }
+
+    .agenda {
+      width: min(calc(100% - 2rem), var(--content));
+      margin: -2.1rem auto 0;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .agenda a {
+      min-height: 145px;
+      padding: 1.55rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--ink);
+      text-decoration: none;
+      border-right: 1px solid var(--line);
+    }
+
+    .agenda a:last-child { border-right: 0; }
+    .agenda a:hover { background: #f2ead8; }
+    .agenda .num { color: var(--gold); font-size: .92rem; }
+    .agenda strong { max-width: 250px; font-weight: 500; line-height: 1.35; }
+
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .audio-card {
+      padding: 1.4rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 5px 22px rgba(16, 24, 32, .05);
+    }
+
+    .audio-card.highlight {
+      color: white;
+      background: var(--night-soft);
+      border-color: transparent;
+    }
+
+    .audio-card p {
+      min-height: 3rem;
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .audio-card.highlight p { color: #bfc9ce; }
+    audio { display: block; width: 100%; height: 42px; }
+
+    .pipeline {
+      margin: 2rem 0;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--line);
+    }
+
+    .pipeline article {
+      min-height: 210px;
+      padding: 1.25rem;
+      background: var(--surface);
+    }
+
+    .pipeline strong {
+      display: block;
+      margin-bottom: .85rem;
+      color: var(--teal);
+      font-size: .76rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .pipeline p { margin: 0; font-size: .9rem; line-height: 1.6; }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin: 1.5rem 0 0;
+    }
+
+    .stat {
+      padding: 1.5rem;
+      border-top: 3px solid var(--gold);
+      background: rgba(255, 253, 247, .7);
+    }
+
+    .stat strong { display: block; font-size: 2.4rem; font-weight: 500; }
+    .stat span { color: var(--muted); }
+
+    .prose { max-width: 790px; }
+    .prose p { margin: 0 0 1.1rem; }
+
+    .empty-note {
+      min-height: 120px;
+      border: 1px dashed rgba(23, 32, 41, .25);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .25);
+    }
+
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem 2rem;
+      padding: 0;
+      list-style: none;
+      counter-reset: ideas;
+    }
+
+    .suggestions li {
+      position: relative;
+      padding: 1rem 0 1rem 3rem;
+      border-top: 1px solid var(--line);
+      counter-increment: ideas;
+    }
+
+    .suggestions li::before {
+      content: counter(ideas, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-family: ui-monospace, monospace;
+      font-size: .82rem;
+    }
+
+    .legacy-block {
+      margin-top: 2rem;
+      padding: 2rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 253, 247, .62);
+    }
+
+    .legacy-block h3:first-child { margin-top: 0; }
+    .legacy-block audio { margin: .9rem 0 1.3rem; }
+    .legacy-block ul { padding-left: 1.25rem; }
+
+    footer {
+      color: #bac4c9;
+      background: var(--night);
+    }
+
+    .footer-inner {
+      width: min(calc(100% - 2rem), var(--content));
+      margin: auto;
+      padding: 2.2rem 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: .82rem;
+    }
+
+    .footer-inner a { color: var(--gold-pale); }
+
+    @media (max-width: 850px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .agenda { grid-template-columns: 1fr; }
+      .agenda a { min-height: 100px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .agenda a:last-child { border-bottom: 0; }
+      .pipeline { grid-template-columns: 1fr; }
+      .pipeline article { min-height: auto; }
+      .details-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      body { font-size: 16px; }
+      .nav-links a:nth-child(2) { display: none; }
+      .hero-inner { min-height: 520px; padding-top: 5rem; }
+      .section { padding: 4.5rem 0; }
+      .section-header { grid-template-columns: 1fr; gap: .7rem; }
+      .section-number { font-size: 1.4rem; }
+      .audio-grid, .suggestions { grid-template-columns: 1fr; }
+      .legacy-block { padding: 1.25rem; }
+      .footer-inner { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="brand" href="#top">ML_<span>Jazz</span></a>
+      <div class="nav-links">
+        <a href="#current">Current approach</a>
+        <a href="#diffusion">Diffusion trials</a>
+        <a href="#transformer">Autoregressive generation</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Machine learning · Audio generation · Jazz</p>
+        <h1>Exploring machine intelligence through music</h1>
+        <p class="hero-copy">Welcome to ML_Jazz! In this project, I will walk you through my journey in the ways of how machines generate music. The journey ended up exploring autoregressive generation with transformers, diffusion models from bare bones, and adapting a pretrained diffusion model with LoRA.</p>
+      </div>
+      <div class="byline">
+        <span class="label">A project by</span>
+        <strong>Lawrence Zou</strong>
+      </div>
+    </div>
+  </header>
+
+  <aside class="agenda" aria-label="Agenda">
+    <a href="#current"><span class="num">01</span><strong>Pretrained diffusion with LoRA finetuning</strong></a>
+    <a href="#diffusion"><span class="num">02</span><strong>Previous trials with diffusion</strong></a>
+    <a href="#transformer"><span class="num">03</span><strong>Transformer autoregressive generation</strong></a>
+  </aside>
+
+  <main id="main">
+    <section class="section" id="current">
+      <header class="section-header">
+        <div class="section-number">01</div>
+        <div>
+          <p class="section-kicker">Current approach</p>
+          <h2>Pretrained diffusion with LoRA finetuning</h2>
+          <p class="lede">The current approach adapts a pretrained text-to-audio diffusion model to the sound and phrasing of jazz while keeping the original model largely intact. LoRA makes that adaptation practical by training a small set of additional weights rather than updating the full model.</p>
+        </div>
+      </header>
+
+      <h3>Generated music</h3>
+      <div class="audio-grid">
+        <article class="audio-card highlight">
+          <h4>Saxophone highlight</h4>
+          <p>A featured generation from the adapted model.</p>
+          <audio src="assets/audio/lora/sample%20sax.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card highlight">
+          <h4>General highlight</h4>
+          <p>A featured generation showing the model's broader musical character.</p>
+          <audio src="assets/audio/lora/sample.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Piano</h4>
+          <p>A piano-focused generation.</p>
+          <audio src="assets/audio/lora/00%20piano.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Saxophone — blues</h4>
+          <p>A blues-oriented saxophone generation.</p>
+          <audio src="assets/audio/lora/00%20sax%20blues.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Saxophone — swing</h4>
+          <p>A saxophone sample with a swing-oriented prompt.</p>
+          <audio src="assets/audio/lora/00%20sax%20swing.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Slow saxophone</h4>
+          <p>A slower, more spacious saxophone generation.</p>
+          <audio src="assets/audio/lora/00%20slow%20sax.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+      </div>
+
+      <h3>The pipeline</h3>
+      <div class="pipeline" aria-label="Prepare data, cache latents, train, generate, evaluate">
+        <article><strong>01 · Prepare data</strong><p>Turn the source recordings into consistent clips, split them into training and holdout sets, and pair them with useful text captions.</p></article>
+        <article><strong>02 · Cache latents</strong><p>Encode the training audio once with the pretrained variational autoencoder so training does not repeat this expensive step.</p></article>
+        <article><strong>03 · Train</strong><p>Optimize only the LoRA attention weights while keeping the pretrained AudioLDM2 model frozen.</p></article>
+        <article><strong>04 · Generate</strong><p>Load an adapter checkpoint and synthesize music from jazz-focused text prompts.</p></article>
+        <article><strong>05 · Evaluate</strong><p>Compare matched base and adapted generations through listening and measures such as Fréchet Audio Distance.</p></article>
+      </div>
+
+      <h3>Training details</h3>
+      <div class="details-grid">
+        <div class="stat"><strong>80</strong><span>training epochs</span></div>
+        <div class="stat"><strong>4</strong><span>samples per batch</span></div>
+        <div class="stat"><strong>500</strong><span>steps between checkpoints</span></div>
+      </div>
+
+      <div class="prose">
+        <h3>Model and adapter architecture details</h3>
+        <p>This project uses <strong>AudioLDM2</strong>, a pretrained latent diffusion model designed for text-conditioned audio generation. It provides a strong general musical prior, which means the experiment can focus on adapting style and instrumentation rather than learning audio generation from scratch. LoRA adapters are attached to the attention layers of the diffusion network while the larger pretrained pipeline remains frozen.</p>
+        <p>A <strong>LoRA rank of 16</strong> was selected as a practical balance: it offers enough capacity to learn the timbre and phrasing of the jazz dataset while keeping the adapter compact, reducing memory use, and limiting the tendency to overfit a comparatively focused collection of recordings.</p>
+
+        <h3>Trials with rank 16 and rank 32</h3>
+        <div class="empty-note" aria-label="Section reserved for rank comparison results"></div>
+
+        <h3>Learning rate tuning</h3>
+        <p>The learning rate is tapered near the end of training. Early updates can make broader stylistic changes; the smaller late-stage updates help refine the adapter without abruptly disturbing musical structure that has already been learned. The final taper is also a useful safeguard against audible degradation or overfitting late in the run.</p>
+      </div>
+
+      <h3>Suggested next steps</h3>
+      <ol class="suggestions">
+        <li>Compare rank 16 and rank 32 with the same prompts, seeds, checkpoints, and listening rubric.</li>
+        <li>Curate a smaller second-stage dataset around phrasing, articulation, and instrument balance.</li>
+        <li>Track checkpoint quality with blind listening comparisons in addition to loss.</li>
+        <li>Expand captions with tempo, instrumentation, articulation, and mood.</li>
+        <li>Report results on a fixed holdout set and a larger generated set before interpreting FAD.</li>
+      </ol>
+    </section>
+
+    <section class="section" id="diffusion">
+      <header class="section-header">
+        <div class="section-number">02</div>
+        <div>
+          <p class="section-kicker">Learning from first principles</p>
+          <h2>Previous trials with diffusion</h2>
+        </div>
+      </header>
+
+      <div class="legacy-block">
+        <h3>Diffusion trial</h3>
+        <p>This trial explores learning diffusion by injecting random noise into an original audio sample.</p>
+
+        <h4>Original audio sample</h4>
+        <p><code>gen_orig_4.wav</code> is the original audio sample.</p>
+        <audio src="assets/audio/legacy/gen_orig_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>Noisy diffusion sample</h4>
+        <p><code>gen_4.wav</code> is the sample with random noise injected while the model is in the process of learning diffusion.</p>
+        <audio src="assets/audio/legacy/gen_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
+      </div>
+    </section>
+
+    <section class="section" id="transformer">
+      <header class="section-header">
+        <div class="section-number">03</div>
+        <div>
+          <p class="section-kicker">Earlier experiments</p>
+          <h2>Transformer autoregressive generation</h2>
+          <p class="lede">Jazz is a free-flowing musical language that is rooted in swing, and improvised melodies. In this project, I aimed to have an AI generate a comprehensible and melodical piece of music, with contrasting ranges in pitch, jazz articulations, and dynamics.</p>
+        </div>
+      </header>
+
+      <div class="legacy-block">
+        <h3>Samples from the 8 layer transformer model built from the ground up</h3>
+
+        <h4>Primer melody - Autumn Leaves - Chordal Melody</h4>
+        <p>(A sample is provided as context and for autoregressive generation, the generated melody starts at 0:27 - it is noticeable the difference - still working on improvements!)</p>
+        <audio src="assets/audio/legacy/autumn_leaves.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>Blues for Alice 1 - Charlie Parker</h4>
+        <ul><li>One can notice the attempt to mirror the embelishments that Parker puts in</li></ul>
+        <audio src="assets/audio/legacy/blues_for_alice_1.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>Sample 2</h4>
+        <audio src="assets/audio/legacy/blues_for_alice_2.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>Sample 3</h4>
+        <audio src="assets/audio/legacy/blues_for_alice_3.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>There will never be another you - Chet Baker</h4>
+        <ul><li>a more space out melody which the model learns to imitate</li></ul>
+        <audio src="assets/audio/legacy/never_be_another_you.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h3>Previous experimentation with a pretrained model developed by Google Magenta</h3>
+        <h3>Some background:</h3>
+        <ul>
+          <li>An Attention Recurrent Neural Network (RNN) was used to capture longer patterns within the music, allowing for better musical phrases and context.</li>
+          <li>The song was based on the Charlie Parker tune, Blues for Alice. Piano was selected to be the lead instrument.</li>
+          <li>The model was trained on collected recordings on the web of pianists, as well as snippets which I personally recorded!</li>
+          <li>Check out the GitHub for more detailed information: <a href="https://github.com/BrightLaw9/ML_Jazz" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+        <p>Take a listen to some of the generated music below! (Note: it's no where near that of a human)</p>
+
+        <h4>Sample 1</h4>
+        <audio src="assets/audio/legacy/Blues_for_Alice_ML_v1.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+        <p>Notes &amp; Notable Timestamps:</p>
+        <ul>
+          <li>Trained on a 2 layer RNN with 64 processing units each</li>
+          <li>0:51 - 1:03 - Repetition of a common starting phase</li>
+          <li>1:15 - 1:16 - Blend nicely with Cm7 - F7 harmonic structure</li>
+          <li>Notable dissonance throughout (playing E)</li>
+        </ul>
+
+        <h4>Sample 2</h4>
+        <audio src="assets/audio/legacy/Blues_for_Alice_ML_v2_swing.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+        <p>Notes &amp; Notable Timestamps:</p>
+        <ul>
+          <li>Trained on a 2 layer RNN with 128 processing units each</li>
+          <li>Relatively more swing feel than others</li>
+          <li>At 1:20, there is instance of overfitting</li>
+          <li>1:32 - interesting swing groove happening! (solid chrous of improv)</li>
+          <li>2:02 - fit the Abm7 -&gt; Db7 harmony nicely</li>
+          <li>Occasional jazz articulations/phrases appearing (one at 2:37 - 2:38)</li>
+        </ul>
+
+        <h4>Sample 3</h4>
+        <audio src="assets/audio/legacy/Blues_for_Alice_ML_v3_color.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+        <p>Notes &amp; Notable Timestamps:</p>
+        <ul>
+          <li>Trained on a 3 layer RNN with 64 processing units each</li>
+          <li>1:20 - Interesting stepping up sequence</li>
+          <li>The stepping up sequence transitions from mid to high range at 1:30 - 1:33</li>
+          <li>1:33 - 1:34 - Melodical phrase generated!</li>
+          <li>1:40 - 2:36 - A period of exotic back and forths with the upper and lower ranges of pitch (effects of attention)</li>
+          <li>2:36 - Return to natural phrasing</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>ML_Jazz · Lawrence Zou</span>
+      <a href="https://github.com/BrightLaw9/ML_Jazz_v2">View the project on GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>
