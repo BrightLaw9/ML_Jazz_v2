@@ -69,30 +69,14 @@
       background: var(--night);
     }
 
-    .hero::before,
-    .hero::after {
-      content: "";
+    .hero-waves {
       position: absolute;
       z-index: -1;
-      border-radius: 50%;
-      filter: blur(2px);
-    }
-
-    .hero::before {
-      width: 38rem;
-      height: 38rem;
-      right: -13rem;
-      top: -22rem;
-      border: 1px solid rgba(215, 168, 74, .4);
-      box-shadow: 0 0 0 5rem rgba(215, 168, 74, .025), 0 0 0 10rem rgba(215, 168, 74, .02);
-    }
-
-    .hero::after {
-      width: 22rem;
-      height: 22rem;
-      left: -11rem;
-      bottom: -14rem;
-      background: rgba(38, 122, 115, .22);
+      width: min(46vw, 620px);
+      right: -3rem;
+      top: 1.5rem;
+      opacity: .38;
+      pointer-events: none;
     }
 
     .hero-inner {
@@ -407,6 +391,13 @@
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="hero" id="top">
+    <svg class="hero-waves" viewBox="0 0 640 250" aria-hidden="true">
+      <path d="M5 42 C95 -8 168 92 260 42 S425 -8 635 42" fill="none" stroke="#d7a84a" stroke-width="2"/>
+      <path d="M5 82 C95 32 168 132 260 82 S425 32 635 82" fill="none" stroke="#267a73" stroke-width="2"/>
+      <path d="M5 122 C95 72 168 172 260 122 S425 72 635 122" fill="none" stroke="#d7a84a" stroke-width="1.5"/>
+      <path d="M5 162 C95 112 168 212 260 162 S425 112 635 162" fill="none" stroke="#267a73" stroke-width="1.5"/>
+      <path d="M5 202 C95 152 168 252 260 202 S425 152 635 202" fill="none" stroke="#d7a84a" stroke-width="1"/>
+    </svg>
     <div class="hero-inner">
       <div>
         <p class="eyebrow">Machine learning · Audio generation · Jazz</p>
