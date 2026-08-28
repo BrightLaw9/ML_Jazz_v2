@@ -1,0 +1,12 @@
+theme: jekyll-theme-cayman
+
+title: "exploring machine intelligence through music"
+description: Lawrence Zou
+show_downloads: false
+
+url: "https://brightlaw9.github.io"
+baseurl: "/ML_Jazz_v2"
+
+github:
+  is_project_page: true
+

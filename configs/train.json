@@ -1,0 +1,51 @@
+{
+  "data": {
+    "raw_dir": "training_samples",
+    "clip_dir": "data/clips",
+    "manifest_path": "data/manifest.jsonl",
+    "sample_rate": 16000,
+    "clip_seconds": 20.0,
+    "holdout_fraction": 0.1,
+    "holdout_block_seconds": 60.0,
+    "seed": 42
+  },
+  "mel": {
+    "n_fft": 1024,
+    "win_length": 1024,
+    "hop_length": 160,
+    "n_mels": 64,
+    "f_min": 0.0,
+    "f_max": 8000.0,
+    "log_clip": 1e-5
+  },
+  "model": {
+    "model_id": "cvssp/audioldm2-music",
+    "lora_rank": 16,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "target_modules": ["to_k", "to_q", "to_v", "to_out.0"]
+  },
+  "train": {
+    "output_dir": "output",
+    "latent_dir": "data/latents",
+    "latent_manifest_path": "data/latent_manifest.jsonl",
+    "batch_size": 4,
+    "gradient_accumulation_steps": 1,
+    "epochs": 10,
+    "max_steps": null,
+    "max_train_samples": null,
+    "learning_rate": 1e-5,
+    "weight_decay": 0.01,
+    "max_grad_norm": 1.0,
+    "empty_prompt_probability": 0.1,
+    "mixed_precision": "bf16",
+    "gradient_checkpointing": false,
+    "num_workers": 0,
+    "checkpoint_every_steps": 500,
+    "sample_on_checkpoint": true,
+    "sample_inference_steps": 50,
+    "seed": 42,
+    "init_adapter_from": null,
+    "resume_from": null
+  }
+}
