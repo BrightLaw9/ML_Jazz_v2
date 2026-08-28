@@ -21,7 +21,7 @@
       --line: rgba(23, 32, 41, .14);
       --shadow: 0 10px 35px rgba(16, 24, 32, .08);
       --radius: 18px;
-      --content: 80vw;
+      --content: 760px;
     }
 
     * { box-sizing: border-box; }
@@ -72,8 +72,8 @@
     .hero-waves {
       position: absolute;
       z-index: -1;
-      width: min(46vw, 620px);
-      right: -3rem;
+      width: min(36vw, 480px);
+      right: 0;
       top: 1.5rem;
       opacity: .38;
       pointer-events: none;
@@ -123,6 +123,9 @@
     .byline {
       width: auto;
       padding: 1rem 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       border-top: 2px solid var(--gold);
     }
 
@@ -136,6 +139,31 @@
     }
 
     .byline strong { font-size: 1.35rem; font-weight: 500; }
+
+    .github-button {
+      margin-top: 1rem;
+      padding: .68rem 1.05rem;
+      color: white;
+      background: var(--gold);
+      border-radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-decoration: none;
+      transition: background-color .2s ease, transform .2s ease;
+    }
+
+    .github-button:hover {
+      color: white;
+      background: #b48935;
+      transform: translateY(-1px);
+    }
+
+    .github-button:focus-visible {
+      outline: 3px solid var(--gold-pale);
+      outline-offset: 3px;
+    }
 
     main { display: block; }
 
@@ -418,6 +446,7 @@
       <div class="byline">
         <span class="label">Crafted by</span>
         <strong>Lawrence Zou</strong>
+        <a class="github-button" href="https://github.com/BrightLaw9/ML_Jazz_v2">View on GitHub</a>
       </div>
     </div>
   </header>
