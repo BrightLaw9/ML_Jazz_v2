@@ -204,6 +204,11 @@
       font-size: 1.12rem;
     }
 
+    #current .section-header .lede {
+      color: #303840;
+      font-weight: 500;
+    }
+
     h3 {
       margin: 4rem 0 1.2rem;
       font-size: clamp(1.3rem, 2vw, 1.75rem);
@@ -521,18 +526,25 @@
         <div>
           <p class="section-kicker">Current approach</p>
           <h2>Pretrained diffusion with LoRA finetuning</h2>
-          <p class="lede">One of the key realizations that led to LoRA fine tuning a model was that training a diffusion model from scratch required an enormous scale of data.
-            To get coherent music, one would need 100s of GB to TBs of audio data in order to turn random noise into music. 
+          <p class="lede">One of the key realizations that led to LoRA fine tuning a model was that training a diffusion model from scratch required an <u>enormous</u> scale of data.
+            <br><br>
+            I had originally expected that large amounts of data would definitely be needed, but I was willing to sacrifice some quality for less data. It turns out, before a certain threshold, the audio will simply sound like noise before you start to discern music (see below).
+            <br><br>
+            To get coherent music when training from scratch, one would need <i>100s of GB to TBs</i> of audio data in order to turn random noise into somewhat pleasant music. 
             This was impractical for myself to implement and unnecessary - thinking cost wise, the amount of compute resources I had and the data I could effectively process.
             
             <br><br>
-            On the other hand, using Low-Rank Adaptation (LoRA) fine tuning, only 3 GB to 6 GB is needed to turn a general text-to-audio diffusion model to a model capable of generating jazz style music.
-            In essence, an adapter is attached on the output end of the pretrained model, with the weights of the pretrained model frozen, and only the adapter weights trainable. The number of weights in the adapter is greatly smaller than the pretrained model (at only about 1-3% of the total weights).
-            
+            On the other hand, using <b>Low-Rank Adaptation (LoRA) fine tuning, only 3 GB to 6 GB is needed</b> to turn a general text-to-audio diffusion model to a model capable of generating jazz style music.
+            In essence, an adapter is attached to the output of the pretrained model, with pretrained model weights frozen, and only the adapter weights trainable.
+            The number of weights in the adapter is greatly smaller than the pretrained model (at only about <b>1-3% of the total weights</b>).
+
+            <br><br>
             This keeps the heavy lifting of what music sounds like handled by the pretrained model unaltered (things like pitch, instrument sounds, timbre), and having the adapter fine tuning focus only on capturing the style of jazz (swing feel, brushed drums, bending of notes on sax).
-
+            
+            <br><br>
             Although, LoRA fine tuning does not generally cover all the weights that full fine tuning achieves, the original LoRA paper research (Hu et al., 2021) shows that useful adaptations appear to have low dimensional structural changes than the total parameters in the original model.
-
+            
+            <br><br>
             Note that the data for training was hand selected to be around 10 hours of audio, all which resembled similar structures in style, phrasing, instrument sounds for training consistency.
 
             Data cleansing was performed to pick out oddities that might cause the model to diverge.
@@ -594,7 +606,7 @@
         <h3>Model and adapter architecture details</h3>
         <p>This project uses <strong>AudioLDM2</strong>, a pretrained latent diffusion model designed for text-conditioned audio generation. It provides a strong general musical prior, which means the experiment can focus on adapting style and instrumentation rather than learning audio generation from scratch. LoRA adapters are attached to the attention layers of the diffusion network while the larger pretrained pipeline remains frozen.</p>
         <article class="audio-card baseline-reference">
-          <h4>AudioLDM2 baseline reference</h4>
+          <h4>What did AudioLDM2 produce as jazz music?</h4>
           <p>This original AudioLDM2 sample was used as the baseline for comparison. The fine-tuned model produced a significant improvement.</p>
           <audio src="assets/audio/lora/A_beautiful_jazz_music_made_by_piano.mp3" controls preload="none">Your browser does not support audio playback.</audio>
         </article>
@@ -607,8 +619,8 @@
       <h3>Suggested next steps</h3>
       <ol class="suggestions">
         <li>Increase to rank 32 with more training data to see if more complex patterns and phrasing can be captured</li>
-        <li>Curate a smaller second-stage dataset around phrasing, articulation, and instrument balance.</li>
         <li>Chord quality struggles right now with generation - with more samples, this multi-pitch harmony can be better handled</li>
+        <li>Curate a smaller second-stage dataset around phrasing, articulation, and instrument balance.</li>
         <li>Expand captions with tempo, instrumentation, articulation, and mood.</li>
         <li>Experiment with other techniques to get better layering of instrumentation - a bit out of sync in some parts</li>
       </ol>
