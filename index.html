@@ -719,14 +719,17 @@
       <div class="legacy-block">
         <h4>Samples from the 8 layer transformer model built from the ground up</h4>
 
-        <h5>Primer melody - Autumn Leaves - Chordal Melody</h5>
-        <p>(A sample is provided as context and for autoregressive generation, the generated melody starts at 0:27 - it is noticeable the difference - still working on improvements!)</p>
+        <h5>A sample using Autumn Leaves as Primer Melody</h5>
+        <p>(The generated melody starts at 0:27)</p>
         <audio src="assets/audio/legacy/autumn_leaves.mp3" controls preload="none">Your browser does not support audio playback.</audio>
 
         <h4>Previous experimentation with a Google Magenta pretrained model</h4>
+        <p>Note that this was the very first initial experiement tinkering in trying to generate jazz music with ML models.
+          <br>
+          The result was with piano instrumentation was decent, however it was constrained to particular timbres enforced by MIDI (whereas diffusion on raw audio was more permissive).</p>
         <h5>Some background:</h5>
         <ul>
-          <li>An Attention Recurrent Neural Network (RNN) was used to capture longer patterns within the music, allowing for better musical phrases and context.</li>
+          <li>An Recurrent Neural Network (RNN) with an attention mechanism was used to capture longer patterns within the music.</li>
           <li>The song was based on the Charlie Parker tune, Blues for Alice. Piano was selected to be the lead instrument.</li>
           <li>The model was trained on collected recordings on the web of pianists, as well as snippets which I personally recorded!</li>
           <li>Check out the GitHub for more detailed information: <a href="https://github.com/BrightLaw9/ML_Jazz" target="_blank" rel="noopener">GitHub</a></li>
@@ -773,9 +776,9 @@
   <section class="references-section" aria-labelledby="references-title">
     <h2 id="references-title">References</h2>
     <div class="reference-list">
+      <p><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer">Ho, J., Jain, A., &amp; Abbeel, P. (2020). Denoising Diffusion Probabilistic Models.</a></p>
       <p><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">Hu et al. (2021). LoRA: Low-Rank Adaptation of Large Language Models.</a></p>
       <p><a href="https://audioldm.github.io/audioldm2/" target="_blank" rel="noopener noreferrer">Liu et al. (2024). AudioLDM 2: Learning Holistic Audio Generation with Self-supervised Pretraining.</a></p>
-      <p><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer">Ho, J., Jain, A., &amp; Abbeel, P. (2020). Denoising Diffusion Probabilistic Models.</a></p>
     </div>
   </section>
 
