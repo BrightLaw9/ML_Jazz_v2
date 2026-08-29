@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#101820">
   <title>Exploring machine intelligence through music — Lawrence Zou</title>
   <script>document.documentElement.classList.add('js');</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
   <style>
     :root {
       --ink: #172029;
@@ -410,9 +411,11 @@
       color: var(--ink);
       background: rgba(215, 168, 74, .1);
       border-left: 3px solid var(--gold);
-      font: .92rem/1.65 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      white-space: nowrap;
+      font-size: 1rem;
+      white-space: normal;
     }
+
+    .equation mjx-container { margin: 0 !important; }
 
     .equation-block p:last-child { margin-bottom: 0; }
 
@@ -526,9 +529,9 @@
         <div>
           <p class="section-kicker">Current approach</p>
           <h2>Pretrained diffusion with LoRA finetuning</h2>
-          <p class="lede">One of the key realizations that led to LoRA fine tuning a model was that training a diffusion model from scratch required an <u>enormous</u> scale of data.
+          <p class="lede">One of the key realizations that led to LoRA fine tuning was that training a diffusion model from scratch required an <u>enormous</u> scale of data.
             <br><br>
-            I had originally expected that large amounts of data would definitely be needed, but I was willing to sacrifice some quality for less data. It turns out, before a certain threshold, the audio will simply sound like noise before you start to discern music (see below).
+            I had originally expected large amounts of data would be needed, but I was willing to sacrifice some quality for less data. It turns out, before a certain threshold, the audio will simply sound like noise before you start to discern music (see below).
             <br><br>
             To get coherent music when training from scratch, one would need <i>100s of GB to TBs</i> of audio data in order to turn random noise into somewhat pleasant music. 
             This was impractical for myself to implement and unnecessary - thinking cost wise, the amount of compute resources I had and the data I could effectively process.
@@ -656,7 +659,7 @@
         <article class="equation-block">
           <h4>Forward process: add noise</h4>
           <div class="equation" role="math" aria-label="q of x t given x t minus 1 equals a normal distribution with mean square root of one minus beta t times x t minus 1, and variance beta t I">
-            q(x<sub>t</sub> | x<sub>t−1</sub>) = 𝒩(x<sub>t</sub>; √(1−β<sub>t</sub>)x<sub>t−1</sub>, β<sub>t</sub>I)
+            \[q(x_t \mid x_{t-1}) = \mathcal{N}\!\left(x_t; \sqrt{1-\beta_t}\,x_{t-1}, \beta_t I\right)\]
           </div>
           <p>Each step keeps most of the previous signal and adds a small amount of fresh Gaussian noise. After many steps, the original structure is replaced by something close to pure noise.</p>
         </article>
@@ -664,7 +667,7 @@
         <article class="equation-block">
           <h4>Direct sampling: reach any noise level</h4>
           <div class="equation" role="math" aria-label="x t equals square root of alpha bar t times x zero plus square root of one minus alpha bar t times epsilon">
-            x<sub>t</sub> = √ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, &nbsp; ε ~ 𝒩(0, I)
+            \[x_t = \sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\epsilon, \qquad \epsilon \sim \mathcal{N}(0,I)\]
           </div>
           <p>With α<sub>t</sub> = 1−β<sub>t</sub> and ᾱ<sub>t</sub> equal to the product of all α values through step <em>t</em>, a noisy training example can be created at any chosen step without simulating every earlier step.</p>
         </article>
@@ -672,7 +675,7 @@
         <article class="equation-block">
           <h4>Reverse process: learn to denoise</h4>
           <div class="equation" role="math" aria-label="x t minus 1 equals one over square root alpha t times x t minus beta t over square root one minus alpha bar t times predicted noise, plus sigma t times z">
-            x<sub>t−1</sub> = 1/√α<sub>t</sub> (x<sub>t</sub> − β<sub>t</sub>/√(1−ᾱ<sub>t</sub>) ε<sub>θ</sub>(x<sub>t</sub>, t)) + σ<sub>t</sub>z
+            \[x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\left(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\epsilon_\theta(x_t,t)\right) + \sigma_t z\]
           </div>
           <p>The model predicts the noise component ε<sub>θ</sub>(x<sub>t</sub>, t), scales it according to the noise schedule, and subtracts it from x<sub>t</sub>. The σ<sub>t</sub>z term adds the variance required for reverse diffusion, where z ~ 𝒩(0, I) for intermediate steps and z = 0 for the final step. Repeating this update produces x<sub>t−1</sub>, then x<sub>t−2</sub>, until the generated sample reaches x<sub>0</sub>.</p>
         </article>
@@ -681,11 +684,11 @@
           <h4>Training objective: predict the noise</h4>
           <p>First, separate the known noise from the model's predicted noise to form the residual:</p>
           <div class="equation" role="math" aria-label="r theta equals epsilon minus epsilon theta of the noisy sample and time t">
-            r<sub>θ</sub> = ε − ε<sub>θ</sub>(√ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, t)
+            \[r_\theta = \epsilon - \epsilon_\theta\!\left(\sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\epsilon,t\right)\]
           </div>
           <p>Then calculate the expected squared size of that residual:</p>
           <div class="equation" role="math" aria-label="L simple equals the expectation over time, clean samples, and noise of the squared norm of r theta">
-            L<sub>simple</sub> = 𝔼<sub>t,x₀,ε</sub>[‖r<sub>θ</sub>‖²]
+            \[L_{\mathrm{simple}} = \mathbb{E}_{t,x_0,\epsilon}\!\left[\left\lVert r_\theta \right\rVert_2^2\right]\]
           </div>
           <p>The expectation averages the loss over randomly selected timesteps, clean samples, and Gaussian noise. Training minimizes this prediction error; the actual removal of predicted noise from x<sub>t</sub> happens in the reverse-process update above.</p>
         </article>
@@ -712,20 +715,6 @@
         <p>(A sample is provided as context and for autoregressive generation, the generated melody starts at 0:27 - it is noticeable the difference - still working on improvements!)</p>
         <audio src="assets/audio/legacy/autumn_leaves.mp3" controls preload="none">Your browser does not support audio playback.</audio>
 
-        <h4>Blues for Alice 1 - Charlie Parker</h4>
-        <ul><li>One can notice the attempt to mirror the embelishments that Parker puts in</li></ul>
-        <audio src="assets/audio/legacy/blues_for_alice_1.mp3" controls preload="none">Your browser does not support audio playback.</audio>
-
-        <h4>Sample 2</h4>
-        <audio src="assets/audio/legacy/blues_for_alice_2.mp3" controls preload="none">Your browser does not support audio playback.</audio>
-
-        <h4>Sample 3</h4>
-        <audio src="assets/audio/legacy/blues_for_alice_3.mp3" controls preload="none">Your browser does not support audio playback.</audio>
-
-        <h4>There will never be another you - Chet Baker</h4>
-        <ul><li>a more space out melody which the model learns to imitate</li></ul>
-        <audio src="assets/audio/legacy/never_be_another_you.mp3" controls preload="none">Your browser does not support audio playback.</audio>
-
         <h3>Previous experimentation with a pretrained model developed by Google Magenta</h3>
         <h3>Some background:</h3>
         <ul>
@@ -734,7 +723,7 @@
           <li>The model was trained on collected recordings on the web of pianists, as well as snippets which I personally recorded!</li>
           <li>Check out the GitHub for more detailed information: <a href="https://github.com/BrightLaw9/ML_Jazz" target="_blank" rel="noopener">GitHub</a></li>
         </ul>
-        <p>Take a listen to some of the generated music below! (Note: it's no where near that of a human)</p>
+        <p>Some samples to listen to below:</p>
 
         <h4>Sample 1</h4>
         <audio src="assets/audio/legacy/Blues_for_Alice_ML_v1.mp3" controls preload="none">Your browser does not support audio playback.</audio>
