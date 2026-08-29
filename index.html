@@ -621,6 +621,20 @@
         </div>
       </header>
 
+      <div class="legacy-block">
+        <h3>Diffusion trial</h3>
+        <p>This trial explores learning diffusion (Ho et al., 2020) by injecting random noise into an original audio sample.</p>
+        <p>All diffusion training and ML architecture was written from the ground up in PyTorch.</p>
+
+        <h4>Original audio sample</h4>
+        <p><code>gen_orig_4.wav</code> is the original audio sample.</p>
+        <audio src="assets/audio/legacy/gen_orig_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
+
+        <h4>Noisy diffusion sample</h4>
+        <p><code>gen_4.wav</code> is the sample with random noise injected while the model is in the process of learning diffusion.</p>
+        <audio src="assets/audio/legacy/gen_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
+      </div>
+
       <div class="equation-section">
         <h3>How noising and denoising work</h3>
         <p>DDPM defines a fixed forward process that gradually adds Gaussian noise, then learns a reverse process that removes that noise one step at a time (Ho et al., 2020). Here, <em>x</em><sub>0</sub> is the clean sample, <em>x</em><sub>t</sub> is its noisy state at step <em>t</em>, and β<sub>t</sub> controls how much noise is added at that step.</p>
@@ -643,33 +657,24 @@
 
         <article class="equation-block">
           <h4>Reverse process: learn to denoise</h4>
-          <div class="equation" role="math" aria-label="p theta of x t minus 1 given x t equals a normal distribution with learned mean mu theta and covariance sigma theta">
-            p<sub>θ</sub>(x<sub>t−1</sub> | x<sub>t</sub>) = 𝒩(x<sub>t−1</sub>; μ<sub>θ</sub>(x<sub>t</sub>, t), Σ<sub>θ</sub>(x<sub>t</sub>, t))
+          <div class="equation" role="math" aria-label="x t minus 1 equals one over square root alpha t times x t minus beta t over square root one minus alpha bar t times predicted noise, plus sigma t times z">
+            x<sub>t−1</sub> = 1/√α<sub>t</sub> (x<sub>t</sub> − β<sub>t</sub>/√(1−ᾱ<sub>t</sub>) ε<sub>θ</sub>(x<sub>t</sub>, t)) + σ<sub>t</sub>z
           </div>
-          <p>The neural network estimates how to move from the current noisy sample toward a slightly cleaner one. Repeating this learned reverse step turns random noise into a generated sample.</p>
+          <p>The model predicts the noise component ε<sub>θ</sub>(x<sub>t</sub>, t), scales it according to the noise schedule, and subtracts it from x<sub>t</sub>. The σ<sub>t</sub>z term adds the variance required for reverse diffusion, where z ~ 𝒩(0, I) for intermediate steps and z = 0 for the final step. Repeating this update produces x<sub>t−1</sub>, then x<sub>t−2</sub>, until the generated sample reaches x<sub>0</sub>.</p>
         </article>
 
         <article class="equation-block">
           <h4>Training objective: predict the noise</h4>
-          <div class="equation" role="math" aria-label="L simple equals the expected squared distance between epsilon and epsilon theta of the noisy sample and time t">
-            L<sub>simple</sub> = 𝔼<sub>t,x₀,ε</sub>[‖ε − ε<sub>θ</sub>(√ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, t)‖²]
+          <p>First, separate the known noise from the model's predicted noise to form the residual:</p>
+          <div class="equation" role="math" aria-label="r theta equals epsilon minus epsilon theta of the noisy sample and time t">
+            r<sub>θ</sub> = ε − ε<sub>θ</sub>(√ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, t)
           </div>
-          <p>During training, the model sees a sample corrupted with known noise and learns to predict that noise. Subtracting the prediction during generation provides the denoising direction.</p>
+          <p>Then calculate the expected squared size of that residual:</p>
+          <div class="equation" role="math" aria-label="L simple equals the expectation over time, clean samples, and noise of the squared norm of r theta">
+            L<sub>simple</sub> = 𝔼<sub>t,x₀,ε</sub>[‖r<sub>θ</sub>‖²]
+          </div>
+          <p>The expectation averages the loss over randomly selected timesteps, clean samples, and Gaussian noise. Training minimizes this prediction error; the actual removal of predicted noise from x<sub>t</sub> happens in the reverse-process update above.</p>
         </article>
-      </div>
-
-      <div class="legacy-block">
-        <h3>Diffusion trial</h3>
-        <p>This trial explores learning diffusion (Ho et al., 2020) by injecting random noise into an original audio sample.</p>
-        <p>All diffusion training and ML architecture was written from the ground up in PyTorch.</p>
-
-        <h4>Original audio sample</h4>
-        <p><code>gen_orig_4.wav</code> is the original audio sample.</p>
-        <audio src="assets/audio/legacy/gen_orig_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
-
-        <h4>Noisy diffusion sample</h4>
-        <p><code>gen_4.wav</code> is the sample with random noise injected while the model is in the process of learning diffusion.</p>
-        <audio src="assets/audio/legacy/gen_4.wav" controls preload="none">Your browser does not support audio playback.</audio>
       </div>
     </section>
 
