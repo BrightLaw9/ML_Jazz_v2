@@ -615,7 +615,7 @@
 
       <div class="prose">
         <h3>Model and adapter architecture details</h3>
-        <p>This project uses <strong>AudioLDM2</strong>, a pretrained latent diffusion model designed for text-conditioned audio generation. It provides a strong general musical prior, which means the experiment can focus on adapting style and instrumentation rather than learning audio generation from scratch. LoRA adapters are attached to the attention layers of the diffusion network while the larger pretrained pipeline remains frozen.</p>
+        <p>This project uses <strong>AudioLDM2</strong> (Liu et al., 2024), a pretrained latent diffusion model designed for text-conditioned audio generation. It provides a strong general musical prior, which means the experiment can focus on adapting style and instrumentation rather than learning audio generation from scratch. LoRA adapters are attached to the attention layers of the diffusion network while the larger pretrained pipeline remains frozen.</p>
         <article class="audio-card baseline-reference">
           <h4>What did AudioLDM2 produce as jazz music?</h4>
           <p>This original AudioLDM2 sample was used as the baseline for comparison. The fine-tuned model produced a significant improvement.</p>
@@ -774,6 +774,7 @@
     <h2 id="references-title">References</h2>
     <div class="reference-list">
       <p><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">Hu et al. (2021). LoRA: Low-Rank Adaptation of Large Language Models.</a></p>
+      <p><a href="https://audioldm.github.io/audioldm2/" target="_blank" rel="noopener noreferrer">Liu et al. (2024). AudioLDM 2: Learning Holistic Audio Generation with Self-supervised Pretraining.</a></p>
       <p><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer">Ho, J., Jain, A., &amp; Abbeel, P. (2020). Denoising Diffusion Probabilistic Models.</a></p>
     </div>
   </section>
