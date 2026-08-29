@@ -393,6 +393,23 @@
 
     .footer-inner a { color: var(--gold-pale); }
 
+    .paper-reference {
+      margin-top: .5rem;
+      padding-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      border-top: 1px solid rgba(255, 255, 255, .14);
+    }
+
+    .paper-reference span {
+      color: #8f9ba1;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
     .js .reveal {
       opacity: 0;
       transform: translateY(18px);
@@ -441,7 +458,7 @@
     <div class="hero-inner">
       <div>
         <h1>Exploring machine intelligence through music</h1>
-        <p class="hero-copy">Welcome to ML_Jazz! In this project, I will walk you through my journey in the ways of how machines generate music. The journey ended up exploring autoregressive generation with transformers, diffusion models from bare bones, and adapting a pretrained diffusion model with LoRA.</p>
+        <p class="hero-copy">Welcome to ML Jazz! Over the past couple of years, I've been exploring ways in how machines can generate music. The journey ended up exploring autoregressive generation with transformers, diffusion models from bare bones, and adapting a pretrained diffusion model with LoRA.</p>
       </div>
       <div class="byline">
         <span class="label">Crafted by</span>
@@ -464,7 +481,22 @@
         <div>
           <p class="section-kicker">Current approach</p>
           <h2>Pretrained diffusion with LoRA finetuning</h2>
-          <p class="lede">The current approach adapts a pretrained text-to-audio diffusion model to the sound and phrasing of jazz while keeping the original model largely intact. LoRA makes that adaptation practical by training a small set of additional weights rather than updating the full model.</p>
+          <p class="lede">One of the key realizations that led to LoRA fine tuning a model was that training a diffusion model from scratch required an enormous scale of data.
+            To get coherent music, one would need 100s of GB to TBs of audio data in order to turn random noise into music. 
+            This was impractical for myself to implement and unnecessary - thinking cost wise, the amount of compute resources I had and the data I could effectively process.
+            
+            <br><br>
+            On the other hand, using Low-Rank Adaptation (LoRA) fine tuning, only 3 GB to 6 GB is needed to turn a general text-to-audio diffusion model to a model capable of generating jazz style music.
+            In essence, an adapter is attached on the output end of the pretrained model, with the weights of the pretrained model frozen, and only the adapter weights trainable. The number of weights in the adapter is greatly smaller than the pretrained model (at only about 1-3% of the total weights).
+            
+            This keeps the heavy lifting of what music sounds like handled by the pretrained model unaltered (things like pitch, instrument sounds, timbre), and having the adapter fine tuning focus only on capturing the style of jazz (swing feel, brushed drums, bending of notes on sax).
+
+            Although, LoRA fine tuning does not generally cover all the weights that full fine tuning achieves, the original LoRA paper research (Hu et al., 2021) shows that useful adaptations appear to have low dimensional structural changes than the total parameters in the original model.
+
+            Note that the data for training was hand selected to be around 10 hours of audio, all which resembled similar structures in style, phrasing, instrument sounds for training consistency.
+
+            Data cleansing was performed to pick out oddities that might cause the model to diverge.
+            </p>
         </div>
       </header>
 
@@ -472,23 +504,13 @@
       <div class="audio-grid">
         <article class="audio-card highlight">
           <h4>Saxophone highlight</h4>
-          <p>A featured generation from the adapted model.</p>
+          <p>A soulful saxophone excerpt backed drums.</p>
           <audio src="assets/audio/lora/sample%20sax.wav" controls preload="none">Your browser does not support audio playback.</audio>
         </article>
         <article class="audio-card highlight">
           <h4>Good quality swing piano</h4>
           <p>A piano generation with a swing feel that transitions into straight time.</p>
           <audio src="assets/audio/lora/sample.wav" controls preload="none">Your browser does not support audio playback.</audio>
-        </article>
-        <article class="audio-card">
-          <h4>Piano</h4>
-          <p>A piano-focused generation.</p>
-          <audio src="assets/audio/lora/00%20piano.wav" controls preload="none">Your browser does not support audio playback.</audio>
-        </article>
-        <article class="audio-card">
-          <h4>Saxophone — blues</h4>
-          <p>A blues-oriented saxophone generation.</p>
-          <audio src="assets/audio/lora/00%20sax%20blues.wav" controls preload="none">Your browser does not support audio playback.</audio>
         </article>
         <article class="audio-card">
           <h4>Saxophone — swing</h4>
@@ -499,6 +521,16 @@
           <h4>Slow saxophone</h4>
           <p>A slower, more spacious saxophone generation.</p>
           <audio src="assets/audio/lora/00%20slow%20sax.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Saxophone — blues</h4>
+          <p>A blues-oriented saxophone generation.</p>
+          <audio src="assets/audio/lora/00%20sax%20blues.wav" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
+        <article class="audio-card">
+          <h4>Piano</h4>
+          <p>A piano-focused generation.</p>
+          <audio src="assets/audio/lora/00%20piano.wav" controls preload="none">Your browser does not support audio playback.</audio>
         </article>
       </div>
 
@@ -521,10 +553,12 @@
       <div class="prose">
         <h3>Model and adapter architecture details</h3>
         <p>This project uses <strong>AudioLDM2</strong>, a pretrained latent diffusion model designed for text-conditioned audio generation. It provides a strong general musical prior, which means the experiment can focus on adapting style and instrumentation rather than learning audio generation from scratch. LoRA adapters are attached to the attention layers of the diffusion network while the larger pretrained pipeline remains frozen.</p>
+        <article class="audio-card baseline-reference">
+          <h4>AudioLDM2 baseline reference</h4>
+          <p>This original AudioLDM2 sample was used as the baseline for comparison. The fine-tuned model produced a significant improvement.</p>
+          <audio src="assets/audio/lora/A_beautiful_jazz_music_made_by_piano.mp3" controls preload="none">Your browser does not support audio playback.</audio>
+        </article>
         <p>A <strong>LoRA rank of 16</strong> was selected as a practical balance: it offers enough capacity to learn the timbre and phrasing of the jazz dataset while keeping the adapter compact, reducing memory use, and limiting the tendency to overfit a comparatively focused collection of recordings.</p>
-
-        <h3>Trials with rank 16 and rank 32</h3>
-        <div class="empty-note" aria-label="Section reserved for rank comparison results"></div>
 
         <h3>Learning rate tuning</h3>
         <p>The learning rate is tapered near the end of training. Early updates can make broader stylistic changes; the smaller late-stage updates help refine the adapter without abruptly disturbing musical structure that has already been learned. The final taper is also a useful safeguard against audible degradation or overfitting late in the run.</p>
@@ -532,11 +566,11 @@
 
       <h3>Suggested next steps</h3>
       <ol class="suggestions">
-        <li>Compare rank 16 and rank 32 with the same prompts, seeds, checkpoints, and listening rubric.</li>
+        <li>Increase to rank 32 with more training data to see if more complex patterns and phrasing can be captured</li>
         <li>Curate a smaller second-stage dataset around phrasing, articulation, and instrument balance.</li>
-        <li>Track checkpoint quality with blind listening comparisons in addition to loss.</li>
+        <li>Chord quality struggles right now with generation - with more samples, this multi-pitch harmony can be better handled</li>
         <li>Expand captions with tempo, instrumentation, articulation, and mood.</li>
-        <li>Report results on a fixed holdout set and a larger generated set before interpreting FAD.</li>
+        <li>Experiment with other techniques to get better layering of instrumentation - a bit out of sync in some parts</li>
       </ol>
     </section>
 
@@ -552,6 +586,7 @@
       <div class="legacy-block">
         <h3>Diffusion trial</h3>
         <p>This trial explores learning diffusion by injecting random noise into an original audio sample.</p>
+        <p>All diffusion training and ML architecture was written from the ground up in PyTorch.</p>
 
         <h4>Original audio sample</h4>
         <p><code>gen_orig_4.wav</code> is the original audio sample.</p>
@@ -567,8 +602,12 @@
       <header class="section-header">
         <div class="section-number">03</div>
         <div>
-          <p class="section-kicker">Earlier experiments</p>
+          <p class="section-kicker">Earlier and new experiments</p>
           <h2>Transformer autoregressive generation</h2>
+
+          <p class="lede">The original idea was that music, specifically jazz, can be treated as a language, and if we could tokenize it, then like LLMs, we can perform next-token prediction to generate intelligent pieces of creation.
+            Fortunately, there does exist a mechanism, audio to MIDI, that produces discrete pitches from wav audio, and through encoding the MIDI, I was able to train a autoregressive transformer to accomplish this task.
+          </p>
           <p class="lede">Jazz is a free-flowing musical language that is rooted in swing, and improvised melodies. In this project, I aimed to have an AI generate a comprehensible and melodical piece of music, with contrasting ranges in pitch, jazz articulations, and dynamics.</p>
         </div>
       </header>
@@ -645,6 +684,10 @@
     <div class="footer-inner">
       <span>ML_Jazz · Lawrence Zou</span>
       <a href="https://github.com/BrightLaw9/ML_Jazz_v2">View the project on GitHub</a>
+      <div class="paper-reference">
+        <span>Reference</span>
+        <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">Hu et al. (2021). LoRA: Low-Rank Adaptation of Large Language Models.</a>
+      </div>
     </div>
   </footer>
   <script>
