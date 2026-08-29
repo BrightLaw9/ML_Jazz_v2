@@ -171,7 +171,7 @@
     .section {
       width: min(calc(100% - 2rem), var(--content));
       margin: auto;
-      padding: 6.5rem 0;
+      padding: 6.5rem 0 3rem;
       scroll-margin-top: 1rem;
     }
 
@@ -478,7 +478,7 @@
         min-height: 520px;
         padding-top: 5rem;
       }
-      .section { padding: 4.5rem 0; }
+      .section { padding: 4.5rem 0 2.5rem; }
       .legacy-block { padding: 1.25rem; }
     }
 
@@ -537,7 +537,7 @@
             This was impractical for myself to implement and unnecessary - thinking cost wise, the amount of compute resources I had and the data I could effectively process.
             
             <br><br>
-            On the other hand, using <b>Low-Rank Adaptation (LoRA) fine tuning, only 3 GB to 6 GB is needed</b> to turn a general text-to-audio diffusion model to a model capable of generating jazz style music.
+            On the other hand, using <b>Low-Rank Adaptation (LoRA) fine tuning, only 3 GB to 6 GB is needed</b> (this is about 10-20 hours of audio) to turn a general text-to-audio diffusion model to a model capable of generating jazz style music.
             In essence, an adapter is attached to the output of the pretrained model, with pretrained model weights frozen, and only the adapter weights trainable.
             The number of weights in the adapter is greatly smaller than the pretrained model (at only about <b>1-3% of the total weights</b>).
 
