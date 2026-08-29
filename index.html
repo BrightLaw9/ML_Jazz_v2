@@ -376,6 +376,39 @@
     .legacy-block audio { margin: .9rem 0 1.3rem; }
     .legacy-block ul { padding-left: 1.25rem; }
 
+    .equation-section {
+      margin: 2rem 0 4rem;
+    }
+
+    .equation-section > p {
+      color: var(--muted);
+    }
+
+    .equation-block {
+      margin-top: 1.25rem;
+      padding: 1.35rem 1.5rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .equation-block h4 {
+      color: var(--teal);
+    }
+
+    .equation {
+      margin: 1rem 0;
+      padding: .9rem 1rem;
+      overflow-x: auto;
+      color: var(--ink);
+      background: rgba(215, 168, 74, .1);
+      border-left: 3px solid var(--gold);
+      font: .92rem/1.65 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      white-space: nowrap;
+    }
+
+    .equation-block p:last-child { margin-bottom: 0; }
+
     footer {
       color: #bac4c9;
       background: var(--night);
@@ -587,6 +620,43 @@
           <h2>Previous trials with diffusion</h2>
         </div>
       </header>
+
+      <div class="equation-section">
+        <h3>How noising and denoising work</h3>
+        <p>DDPM defines a fixed forward process that gradually adds Gaussian noise, then learns a reverse process that removes that noise one step at a time (Ho et al., 2020). Here, <em>x</em><sub>0</sub> is the clean sample, <em>x</em><sub>t</sub> is its noisy state at step <em>t</em>, and β<sub>t</sub> controls how much noise is added at that step.</p>
+
+        <article class="equation-block">
+          <h4>Forward process: add noise</h4>
+          <div class="equation" role="math" aria-label="q of x t given x t minus 1 equals a normal distribution with mean square root of one minus beta t times x t minus 1, and variance beta t I">
+            q(x<sub>t</sub> | x<sub>t−1</sub>) = 𝒩(x<sub>t</sub>; √(1−β<sub>t</sub>)x<sub>t−1</sub>, β<sub>t</sub>I)
+          </div>
+          <p>Each step keeps most of the previous signal and adds a small amount of fresh Gaussian noise. After many steps, the original structure is replaced by something close to pure noise.</p>
+        </article>
+
+        <article class="equation-block">
+          <h4>Direct sampling: reach any noise level</h4>
+          <div class="equation" role="math" aria-label="x t equals square root of alpha bar t times x zero plus square root of one minus alpha bar t times epsilon">
+            x<sub>t</sub> = √ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, &nbsp; ε ~ 𝒩(0, I)
+          </div>
+          <p>With α<sub>t</sub> = 1−β<sub>t</sub> and ᾱ<sub>t</sub> equal to the product of all α values through step <em>t</em>, a noisy training example can be created at any chosen step without simulating every earlier step.</p>
+        </article>
+
+        <article class="equation-block">
+          <h4>Reverse process: learn to denoise</h4>
+          <div class="equation" role="math" aria-label="p theta of x t minus 1 given x t equals a normal distribution with learned mean mu theta and covariance sigma theta">
+            p<sub>θ</sub>(x<sub>t−1</sub> | x<sub>t</sub>) = 𝒩(x<sub>t−1</sub>; μ<sub>θ</sub>(x<sub>t</sub>, t), Σ<sub>θ</sub>(x<sub>t</sub>, t))
+          </div>
+          <p>The neural network estimates how to move from the current noisy sample toward a slightly cleaner one. Repeating this learned reverse step turns random noise into a generated sample.</p>
+        </article>
+
+        <article class="equation-block">
+          <h4>Training objective: predict the noise</h4>
+          <div class="equation" role="math" aria-label="L simple equals the expected squared distance between epsilon and epsilon theta of the noisy sample and time t">
+            L<sub>simple</sub> = 𝔼<sub>t,x₀,ε</sub>[‖ε − ε<sub>θ</sub>(√ᾱ<sub>t</sub>x<sub>0</sub> + √(1−ᾱ<sub>t</sub>)ε, t)‖²]
+          </div>
+          <p>During training, the model sees a sample corrupted with known noise and learns to predict that noise. Subtracting the prediction during generation provides the denoising direction.</p>
+        </article>
+      </div>
 
       <div class="legacy-block">
         <h3>Diffusion trial</h3>
