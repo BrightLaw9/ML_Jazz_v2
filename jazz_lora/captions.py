@@ -3,29 +3,19 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-
-TRIO_CAPTIONS = (
-    "A beautiful jazz music made by piano.",
-    "A beautiful jazz piano melody.",
-    "Jazz music with a melodic piano.",
-)
-
-SAX_CAPTIONS = (
-    "A beautiful jazz music with saxophone.",
-    "A beautiful jazz saxophone melody.",
-    "Jazz music with a melodic saxophone.",
-)
-
-GENERIC_CAPTIONS = TRIO_CAPTIONS + SAX_CAPTIONS
+from .config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS
 
 
 def caption_family(source_path: str | Path) -> tuple[str, ...]:
     category = Path(source_path).parent.name.casefold()
-    if category == "jazz_sax":
-        return SAX_CAPTIONS
-    if category == "jazz_piano_trio":
-        return TRIO_CAPTIONS
-    return GENERIC_CAPTIONS
+    return next(
+        (
+            captions
+            for folder, captions in CAPTIONS_BY_FOLDER.items()
+            if folder.casefold() == category
+        ),
+        DEFAULT_CAPTIONS,
+    )
 
 
 def choose_caption(source_path: str | Path, clip_index: int, seed: int) -> str:

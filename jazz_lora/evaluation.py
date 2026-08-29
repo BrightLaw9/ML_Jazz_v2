@@ -7,8 +7,7 @@ from pathlib import Path
 import scipy.io.wavfile
 import torch
 
-from .captions import GENERIC_CAPTIONS
-from .config import AppConfig
+from .config import AppConfig, DEFAULT_CAPTIONS
 from .inference import load_pipeline
 
 
@@ -52,7 +51,7 @@ def evaluate(
     compute_fad: bool,
 ) -> dict[str, float | int | str]:
     rng = random.Random(config.train.seed)
-    prompts = [rng.choice(GENERIC_CAPTIONS) for _ in range(count)]
+    prompts = [rng.choice(DEFAULT_CAPTIONS) for _ in range(count)]
     seeds = [rng.randrange(2**31) for _ in range(count)]
     run_name = f"{Path(adapter).name}_n{count}_s{inference_steps}"
     root = Path(config.train.output_dir) / "eval" / run_name

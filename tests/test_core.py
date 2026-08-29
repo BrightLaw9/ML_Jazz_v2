@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from jazz_lora.captions import SAX_CAPTIONS, TRIO_CAPTIONS, caption_family, choose_caption
-from jazz_lora.config import load_config
+from jazz_lora.captions import caption_family, choose_caption
+from jazz_lora.config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS, load_config
 from jazz_lora.manifest import read_jsonl, write_jsonl
 
 
@@ -20,8 +20,12 @@ class CoreTests(unittest.TestCase):
     def test_instrument_specific_captions(self) -> None:
         trio = Path("training_samples/jazz_piano_trio/song.wav")
         sax = Path("training_samples/jazz_sax/song.wav")
-        self.assertIs(caption_family(trio), TRIO_CAPTIONS)
-        self.assertIs(caption_family(sax), SAX_CAPTIONS)
+        self.assertIs(caption_family(trio), CAPTIONS_BY_FOLDER["jazz_piano_trio"])
+        self.assertIs(caption_family(sax), CAPTIONS_BY_FOLDER["jazz_sax"])
+        self.assertIs(
+            caption_family(Path("training_samples/uncategorized/song.wav")),
+            DEFAULT_CAPTIONS,
+        )
         self.assertEqual(choose_caption(trio, 7, 42), choose_caption(trio, 7, 42))
 
     def test_manifest_round_trip(self) -> None:

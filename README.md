@@ -18,6 +18,63 @@ pip install -r requirements.txt
 
 For an NVIDIA GPU, install the CUDA build of matching `torch` and `torchaudio` first, using the command from PyTorch's installer page, then install `requirements.txt`.
 
+## Training on another music style
+
+The data preparation and LoRA training pipeline is not limited to jazz. To adapt
+AudioLDM2 to another style, organize the source recordings and configure their
+captions before running the pipeline:
+
+1. Populate `training_samples` with the recordings for the new style. Supported
+   source formats are WAV, FLAC, OGG, AIF, and AIFF. Convert MP3 files to one of
+   these formats before preparation.
+2. Organize recordings into immediate subfolders according to the categories
+   that should receive different captions. For example:
+
+   ```text
+   training_samples/
+   ├── ambient_piano/
+   │   ├── recording_01.wav
+   │   └── recording_02.flac
+   └── ambient_synth/
+       └── recording_03.wav
+   ```
+
+3. In `jazz_lora/config.py`, replace `CAPTIONS_BY_FOLDER` with a mapping from
+   each lowercase folder name to a tuple of suitable text-to-audio captions:
+
+   ```python
+   CAPTIONS_BY_FOLDER: dict[str, tuple[str, ...]] = {
+       "ambient_piano": (
+           "Slow ambient music with a soft piano.",
+           "A spacious atmospheric piano piece.",
+       ),
+       "ambient_synth": (
+           "Ambient electronic music with warm synthesizers.",
+           "A spacious evolving synthesizer soundscape.",
+       ),
+   }
+   ```
+
+   Folder matching is case-insensitive. Files placed in an unmapped folder use
+   `DEFAULT_CAPTIONS`, which is automatically assembled from all configured
+   caption tuples. Use specific, consistent captions that describe the style,
+   instrumentation, tempo, mood, or articulation the adapter should learn.
+4. Review `configs/train.json`. Adjust clip length, batch size, epochs, LoRA
+   rank, learning rate, and output paths for the dataset and available hardware.
+   Also set `train.sample_prompt` if checkpoint listening samples should use a
+   prompt suited to the new style.
+5. Run preparation, latent caching, and training in order:
+
+   ```powershell
+   python -m scripts.prepare_data --config configs\train.json
+   python -m scripts.cache_latents --config configs\train.json --device cuda
+   accelerate launch --module scripts.train_lora --config configs\train.json
+   ```
+
+Use empty data/output locations for a new experiment so clips, manifests,
+latents, and checkpoints from different styles are not mixed. Caption selection
+is deterministic for a given source path, clip index, and seed.
+
 ## CPU direction smoke test
 
 The first cache command downloads only the VAE. Training/generation downloads the full `cvssp/audioldm2-music` pipeline and may use roughly 20 GB of system RAM. CPU inference is slow; the smoke config deliberately runs only two optimizer steps and does not generate checkpoint audio.
