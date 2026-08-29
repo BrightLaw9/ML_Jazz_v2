@@ -4,8 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from caption_config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS
 from jazz_lora.captions import caption_family, choose_caption
-from jazz_lora.config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS, load_config
+from jazz_lora.config import load_config
 from jazz_lora.manifest import read_jsonl, write_jsonl
 
 

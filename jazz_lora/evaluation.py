@@ -7,7 +7,9 @@ from pathlib import Path
 import scipy.io.wavfile
 import torch
 
-from .config import AppConfig, DEFAULT_CAPTIONS
+from caption_config import DEFAULT_CAPTIONS
+
+from .config import AppConfig
 from .inference import load_pipeline
 
 

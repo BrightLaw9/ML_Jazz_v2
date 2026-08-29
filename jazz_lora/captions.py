@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from .config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS
+from caption_config import CAPTIONS_BY_FOLDER, DEFAULT_CAPTIONS
 
 
 def caption_family(source_path: str | Path) -> tuple[str, ...]:

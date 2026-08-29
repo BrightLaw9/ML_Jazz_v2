@@ -24,7 +24,7 @@ The data preparation and LoRA training pipeline is not limited to jazz. To adapt
 AudioLDM2 to another style, organize the source recordings and configure their
 captions before running the pipeline:
 
-1. Populate `training_samples` with the recordings for the new style. Supported
+1. Populate `training_samples` directory in root with the recordings for the new style. Supported
    source formats are WAV, FLAC, OGG, AIF, and AIFF. Convert MP3 files to one of
    these formats before preparation.
 2. Organize recordings into immediate subfolders according to the categories
@@ -39,7 +39,7 @@ captions before running the pipeline:
        └── recording_03.wav
    ```
 
-3. In `jazz_lora/config.py`, replace `CAPTIONS_BY_FOLDER` with a mapping from
+3. In the root-level `caption_config.py`, replace `CAPTIONS_BY_FOLDER` with a mapping from
    each lowercase folder name to a tuple of suitable text-to-audio captions:
 
    ```python
