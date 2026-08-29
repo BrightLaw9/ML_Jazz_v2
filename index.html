@@ -393,21 +393,26 @@
 
     .footer-inner a { color: var(--gold-pale); }
 
-    .paper-reference {
-      margin-top: .5rem;
-      padding-top: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: .35rem;
-      border-top: 1px solid rgba(255, 255, 255, .14);
+    .references-section {
+      width: min(calc(100% - 2rem), var(--content));
+      margin: 0 auto;
+      padding: 0 0 5rem;
     }
 
-    .paper-reference span {
-      color: #8f9ba1;
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: .13em;
-      text-transform: uppercase;
+    .references-section h2 {
+      margin-bottom: 1.25rem;
+      font-size: 1.45rem;
+    }
+
+    .reference-list {
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .reference-list p {
+      margin: 0 0 .85rem;
+      color: var(--muted);
+      font-size: .92rem;
     }
 
     .js .reveal {
@@ -585,7 +590,7 @@
 
       <div class="legacy-block">
         <h3>Diffusion trial</h3>
-        <p>This trial explores learning diffusion by injecting random noise into an original audio sample.</p>
+        <p>This trial explores learning diffusion (Ho et al., 2020) by injecting random noise into an original audio sample.</p>
         <p>All diffusion training and ML architecture was written from the ground up in PyTorch.</p>
 
         <h4>Original audio sample</h4>
@@ -680,19 +685,23 @@
     </section>
   </main>
 
+  <section class="references-section" aria-labelledby="references-title">
+    <h2 id="references-title">References</h2>
+    <div class="reference-list">
+      <p><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">Hu et al. (2021). LoRA: Low-Rank Adaptation of Large Language Models.</a></p>
+      <p><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer">Ho, J., Jain, A., &amp; Abbeel, P. (2020). Denoising Diffusion Probabilistic Models.</a></p>
+    </div>
+  </section>
+
   <footer>
     <div class="footer-inner">
       <span>ML_Jazz · Lawrence Zou</span>
       <a href="https://github.com/BrightLaw9/ML_Jazz_v2">View the project on GitHub</a>
-      <div class="paper-reference">
-        <span>Reference</span>
-        <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">Hu et al. (2021). LoRA: Low-Rank Adaptation of Large Language Models.</a>
-      </div>
     </div>
   </footer>
   <script>
     const revealTargets = document.querySelectorAll(
-      '.section-header, .audio-card, .pipeline article, .stat, .prose > *, .suggestions li, .legacy-block > *'
+      '.section-header, .audio-card, .pipeline article, .stat, .prose > *, .suggestions li, .legacy-block > *, .references-section > *'
     );
 
     revealTargets.forEach((element) => element.classList.add('reveal'));
